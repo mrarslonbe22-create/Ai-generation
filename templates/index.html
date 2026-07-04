@@ -1,1 +1,76 @@
-z
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<title>Gaming Video AI</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 20px; background:#0f0f0f; color:#eee; }
+  h1 { color:#7c3aed; }
+  label { display:block; margin-top:16px; font-weight:600; }
+  input[type=text], select { width:100%; padding:10px; margin-top:6px; border-radius:8px; border:1px solid #333; background:#1a1a1a; color:#eee; }
+  input[type=file] { margin-top:6px; }
+  button { margin-top:24px; padding:12px 24px; background:#7c3aed; color:white; border:none; border-radius:8px; font-size:16px; cursor:pointer; }
+  button:disabled { opacity:0.5; }
+  #status { margin-top:20px; white-space:pre-wrap; }
+  #result { margin-top:20px; }
+  video { width:100%; margin-top:12px; border-radius:8px; }
+</style>
+</head>
+<body>
+  <h1>🎮 Gaming Video AI</h1>
+  <p>Mavzuni yozing, o'zingiz screen-record qilgan gameplay videoni yuklang — qolganini AI qiladi.</p>
+
+  <form id="genForm">
+    <label>Video mavzusi</label>
+    <input type="text" name="topic" placeholder="Masalan: GTA 6 so'nggi yangiliklari" required>
+
+    <label>Gameplay video fayli</label>
+    <input type="file" name="gameplay" accept="video/*" required>
+
+    <label>Ovoz turi</label>
+    <select name="voice">
+      <option value="male">Erkak ovozi</option>
+      <option value="female">Ayol ovozi</option>
+    </select>
+
+    <label>Format</label>
+    <select name="orientation">
+      <option value="vertical">Vertikal (Shorts/Reels)</option>
+      <option value="horizontal">Gorizontal (odatiy YouTube)</option>
+    </select>
+
+    <button type="submit" id="submitBtn">Video yaratish</button>
+  </form>
+
+  <div id="status"></div>
+  <div id="result"></div>
+
+<script>
+document.getElementById("genForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById("submitBtn");
+  const status = document.getElementById("status");
+  const result = document.getElementById("result");
+  btn.disabled = true;
+  status.textContent = "⏳ Skript yozilyapti, ovoz yaratilyapti va video montaj qilinyapti... Bu bir necha daqiqa vaqt olishi mumkin.";
+  result.innerHTML = "";
+
+  const formData = new FormData(e.target);
+  try {
+    const res = await fetch("/generate", { method: "POST", body: formData });
+    const data = await res.json();
+    if (data.error) {
+      status.textContent = "❌ Xato: " + data.error;
+    } else {
+      status.textContent = "✅ Tayyor!\n\n--- SKRIPT ---\n" + data.script;
+      result.innerHTML = `<video controls src="${data.video_url}"></video>
+        <p><a href="${data.video_url}" style="color:#7c3aed">⬇️ Videoni yuklab olish</a></p>`;
+    }
+  } catch (err) {
+    status.textContent = "❌ Xato yuz berdi: " + err;
+  }
+  btn.disabled = false;
+});
+</script>
+</body>
+</html>
