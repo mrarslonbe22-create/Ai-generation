@@ -94,6 +94,26 @@ Agar kanal katta bo'lib, Groq limitiga tegib qolsangiz, boshqa bepul
 muqobillar: Google Gemini (bepul tier), yoki OpenRouter'dagi bepul modellar.
 `modules/script_writer.py` faylidagi `client`ni almashtirish kifoya.
 
+## Render'ga joylash
+
+1. Loyihani GitHub'ga joylang (yuqoridagi bo'limga qarang)
+2. https://render.com ga kiring, GitHub akkauntingiz bilan ro'yxatdan o'ting
+3. **New +** → **Web Service** → repo'ingizni tanlang
+4. Render `Dockerfile`ni avtomatik taniydi (environment: **Docker** deb tanlang)
+5. **Environment** bo'limida `GROQ_API_KEY` o'zgaruvchisini qo'shing (qiymatini kiriting)
+6. **Instance type**: Free tanlang → **Create Web Service**
+7. Birinchi build 5-10 daqiqa davom etadi (ffmpeg o'rnatilishi kerak)
+
+Deploy tugagach, sizga `https://sizning-loyiha.onrender.com` ko'rinishidagi doimiy havola beriladi.
+
+### Bepul tarifning cheklovlari (bilib qo'ying)
+
+- **Uxlab qolish**: 15 daqiqa faoliyatsizlikdan keyin sayt "uxlaydi", keyingi kirishda 30-60 soniya kutasiz (bu normal, xato emas)
+- **Vaqtinchalik fayllar**: Bepul tarifda doimiy disk yo'q — agar servis qayta ishga tushsa (redeploy yoki uzoq vaqt uxlab, qayta uyg'onganda), oldingi yaratilgan videolar o'chib ketishi mumkin. Shuning uchun video yaratilgach, **darhol yuklab oling**, keyinga qoldirmang
+- **RAM cheklovi**: Bepul tarifda 512MB RAM bor — juda uzun yoki og'ir gameplay videolar (masalan 4K, 10+ daqiqa) xotira yetishmasligiga olib kelishi mumkin. Shunday xato chiqsa, gameplay videoni qisqaroq yoki past sifatli qilib yuklang
+
+Agar bular halaqit bersa, keyinchalik $7/oy'lik "Starter" tarifga o'tsangiz, uxlash va disk muammolari yo'qoladi.
+
 ## Keyingi qadamlar (ixtiyoriy yaxshilashlar)
 
 - Avtomatik YouTube'ga yuklash (YouTube Data API orqali)
