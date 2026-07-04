@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: game-video-ai
+    env: docker
+    plan: free
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false   # bu qiymatni Render dashboard'da qo'lda kiritasiz
+    # Eslatma: bepul tarifda persistent disk mavjud emas — pastdagi
+    # tushuntirishga qarang (video fayllar doimiy saqlanmaydi)
