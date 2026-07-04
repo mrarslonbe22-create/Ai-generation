@@ -52,7 +52,7 @@ document.getElementById("genForm").addEventListener("submit", async (e) => {
   const status = document.getElementById("status");
   const result = document.getElementById("result");
   btn.disabled = true;
-  status.textContent = "⏳ Skript yozilyapti, ovoz yaratilyapti va video montaj qilinyapti... Bu bir necha daqiqa vaqt olishi mumkin.";
+  status.textContent = "⏳ Ish boshlandi, kuting...";
   result.innerHTML = "";
 
   const formData = new FormData(e.target);
@@ -61,16 +61,42 @@ document.getElementById("genForm").addEventListener("submit", async (e) => {
     const data = await res.json();
     if (data.error) {
       status.textContent = "❌ Xato: " + data.error;
-    } else {
-      status.textContent = "✅ Tayyor!\n\n--- SKRIPT ---\n" + data.script;
-      result.innerHTML = `<video controls src="${data.video_url}"></video>
-        <p><a href="${data.video_url}" style="color:#7c3aed">⬇️ Videoni yuklab olish</a></p>`;
+      btn.disabled = false;
+      return;
     }
+    pollStatus(data.job_id, btn, status, result);
   } catch (err) {
     status.textContent = "❌ Xato yuz berdi: " + err;
+    btn.disabled = false;
   }
-  btn.disabled = false;
 });
+
+async function pollStatus(jobId, btn, status, result) {
+  const interval = setInterval(async () => {
+    try {
+      const res = await fetch(`/status/${jobId}`);
+      const job = await res.json();
+
+      if (job.status === "xato") {
+        status.textContent = "❌ Xato: " + job.error;
+        clearInterval(interval);
+        btn.disabled = false;
+      } else if (job.status === "tayyor") {
+        status.textContent = "✅ Tayyor!\n\n--- SKRIPT ---\n" + job.script;
+        result.innerHTML = `<video controls src="${job.video_url}"></video>
+          <p><a href="${job.video_url}" style="color:#7c3aed">⬇️ Videoni yuklab olish</a></p>`;
+        clearInterval(interval);
+        btn.disabled = false;
+      } else {
+        status.textContent = "⏳ Holat: " + job.status + " ...";
+      }
+    } catch (err) {
+      status.textContent = "❌ Ulanish xatosi: " + err;
+      clearInterval(interval);
+      btn.disabled = false;
+    }
+  }, 3000);
+}
 </script>
 </body>
 </html>
