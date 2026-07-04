@@ -16,5 +16,8 @@ COPY . .
 
 RUN mkdir -p uploads output
 
+RUN echo "=== /app ichidagi fayllar ===" && ls -la /app && \
+    echo "=== /app/modules ichidagi fayllar ===" && ls -la /app/modules || echo "!!! modules papkasi TOPILMADI !!!"
+
 # Render PORT o'zgaruvchisini beradi, shuni ishlatamiz
 CMD gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --timeout 600
